@@ -72,6 +72,9 @@ test('a plan splits into one session per repo, with cross-repo parents', () => {
   assert.deepEqual(unassigned, [{ n: 4, title: '4. Ops note', why: 'names several repos (be-api, fe-web)' }])
   assert.equal(planKey('/x/PROJ-9999-demo-plan.md'), 'PROJ-9999')
   assert.equal(planKey('/x/TBD-cf-waf-move.md'), 'TBD-cf')
+  // No key in the file name: the folder's key, else the bare name. Never a crash.
+  assert.equal(planKey('/x/tasks/TASK-A1-some-task/plan.md'), 'TASK-A1')
+  assert.equal(planKey('/x/plans/plan.md'), 'plan')
 })
 
 test('a plan with no steps section, or a dependency cycle, is refused', () => {

@@ -20,10 +20,14 @@ import { openStore } from './store.mjs'
 
 const STEP_SECTIONS = [/^##\s+implementation steps\b/i, /^##\s+implementation\b/i, /^##\s+design\b/i]
 
-/** The ticket key a plan file is named after: `PROJ-123-…md` → `PROJ-123`. */
+/**
+ * The ticket key a plan file is named after: `PROJ-123-…md` → `PROJ-123`. A file with no key in
+ * its name (`plan.md`) takes its folder's (`tasks/PROJ-123-x/plan.md` → `PROJ-123`), else its name.
+ */
 export const planKey = (file) => {
+  const keyOf = (name) => (/^([A-Z][A-Z0-9]*-\d+)/.exec(name) || /^([A-Za-z]+-[^-]+)/.exec(name))?.[1]
   const base = path.basename(file, '.md')
-  return (/^([A-Z][A-Z0-9]*-\d+)/.exec(base) || /^([A-Za-z]+-[^-]+)/.exec(base) || [base])[1].slice(0, 40)
+  return (keyOf(base) || keyOf(path.basename(path.dirname(file))) || base).slice(0, 40)
 }
 
 /** Repos are folders under `reposDir` that are git checkouts. */
